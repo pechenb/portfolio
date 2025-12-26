@@ -1,0 +1,90 @@
+{% extends "base.html" %}
+{% block content %}
+<header class="hero">
+  <div class="hero__text">
+    <div class="badge">Portfolio</div>
+    <h1>Роман Кормильцын</h1>
+    <p class="tagline">Building network tools, roadmaps, and resilient UIs.</p>
+    <div class="contacts">
+      <a href="mailto:kormylcyn.roman@gmail.com" class="chip">kormylcyn.roman@gmail.com</a>
+      <a href="https://t.me/mothchild" class="chip" target="_blank">Telegram</a>
+      <a href="https://github.com/pechenb" class="chip" target="_blank">GitHub</a>
+    </div>
+    <div class="cta-row">
+      {% if current_user.is_authenticated %}
+        <span class="chip chip--muted">Hi, {{ current_user.name or 'Guest' }}</span>
+        <a class="btn" href="{{ url_for('logout') }}">Logout</a>
+      {% else %}
+        <a class="btn" href="{{ url_for('login', provider='github') }}">Login with GitHub</a>
+        <a class="btn btn--ghost" href="{{ url_for('login', provider='google') }}">Login with Google</a>
+      {% endif %}
+    </div>
+  </div>
+  <div class="hero__photo">
+    <div class="photo-frame">
+      <div class="photo" style="background: center/cover no-repeat url('{{ url_for('static', filename='me.jpg') }}'), linear-gradient(135deg, #182034, #111623);"></div>
+    </div>
+  </div>
+</header>
+
+<main>
+  <section class="section">
+    <div class="section__header">
+      <h2>About</h2>
+      <p>Focused on network simulation, backend services, and fast UI iterations.</p>
+    </div>
+    <div class="card about">
+      <p>Engineering network emulation tools (Miminet), building Compose Multiplatform applications (Graphs-Graphs) and libraries for Kotlin. Interested in system programming.
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="section__header">
+      <h2>Projects</h2>
+      <p>Selected work — code links included.</p>
+    </div>
+    <div class="grid">
+      {% for p in projects %}
+      <article class="card project">
+        <div class="project__title">{{ p.name }}</div>
+        <p class="project__desc">{{ p.description }}</p>
+        <a href="{{ p.repo_url }}" target="_blank" class="project__link">Repository →</a>
+      </article>
+      {% endfor %}
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="section__header">
+      <h2>Comments</h2>
+      <p>Share your feedback or just say hi.</p>
+    </div>
+    <div class="card comments">
+      <form id="comment-form">
+        <textarea id="comment-input" name="body" rows="3" placeholder="Leave a comment..." {% if not current_user.is_authenticated %}disabled{% endif %}></textarea>
+        <div class="form-actions">
+          {% if current_user.is_authenticated %}
+          <button type="submit" class="btn">Post</button>
+          {% else %}
+          <span class="hint">Login to comment</span>
+          {% endif %}
+        </div>
+      </form>
+      <div id="comments-list">
+        {% for c in comments %}
+        <div class="comment">
+          <div class="comment__avatar" style="background-image:url('{{ c.user.avatar or '' }}')"></div>
+          <div class="comment__body">
+            <div class="comment__meta">
+              <span class="comment__author">{{ c.user.name or "Anonymous" }}</span>
+              <span class="comment__time">{{ c.created_at.strftime('%Y-%m-%d %H:%M') }}</span>
+            </div>
+            <div class="comment__text">{{ c.body }}</div>
+          </div>
+        </div>
+        {% endfor %}
+      </div>
+    </div>
+  </section>
+</main>
+{% endblock %}
