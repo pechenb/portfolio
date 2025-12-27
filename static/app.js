@@ -24,6 +24,29 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   }
 
+  // Yandex Metrika consent + lazy load
+  const yandexId = document.body?.dataset.yandexId;
+  const banner = document.getElementById("cookie-banner");
+  const acceptBtn = document.getElementById("cookie-accept");
+  const consentKey = "yandexMetrikaConsent";
+
+  const hasConsent = localStorage.getItem(consentKey) === "accepted";
+
+  if (yandexId) {
+    if (hasConsent) {
+      loadYandex(yandexId);
+    } else if (banner) {
+      banner.classList.remove("hidden");
+    }
+  }
+
+  if (banner && acceptBtn && yandexId) {
+    acceptBtn.addEventListener("click", () => {
+      localStorage.setItem(consentKey, "accepted");
+      banner.classList.add("hidden");
+      loadYandex(yandexId);
+    });
+  }
 });
 
 function prependComment(list, data) {
@@ -43,19 +66,28 @@ function prependComment(list, data) {
   list.prepend(item);
 }
 
-function launchTelegramLogin(botId, botUsername) {
-  if (!botId) {
-    alert("Telegram bot_id is not configured.");
-    return;
-  }
-  const popup = window.open(
-    `https://oauth.telegram.org/auth?bot_id=${encodeURIComponent(botId)}&origin=${encodeURIComponent(
-      window.location.origin
-    )}&return_to=${encodeURIComponent(window.location.origin)}&request_access=write`,
-    "tgAuth",
-    "width=600,height=700"
-  );
-  if (!popup) {
-    alert("Please allow popups for Telegram login.");
-  }
+function loadYandex(counterId) {
+  if (!counterId || window.__ymInitialized) return;
+  window.__ymInitialized = true;
+  (function (m, e, t, r, i, k, a) {
+    m[i] =
+      m[i] ||
+      function () {
+        (m[i].a = m[i].a || []).push(arguments);
+      };
+    m[i].l = 1 * new Date();
+    k = e.createElement(t);
+    a = e.getElementsByTagName(t)[0];
+    k.async = 1;
+    k.src = r;
+    a.parentNode.insertBefore(k, a);
+  })(window, document, "script", "https://mc.yandex.ru/metrika/tag.js", "ym");
+
+  window.ym(counterId, "init", {
+    clickmap: true,
+    trackLinks: true,
+    accurateTrackBounce: true,
+    webvisor: true,
+    defer: true,
+  });
 }

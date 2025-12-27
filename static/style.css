@@ -250,6 +250,40 @@ a {
   text-transform: uppercase;
 }
 
+.cookie-banner {
+  position: fixed;
+  left: 50%;
+  bottom: 16px;
+  transform: translateX(-50%);
+  width: calc(100% - 32px);
+  max-width: 960px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 14px 16px;
+  background: rgba(17, 22, 35, 0.96);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  box-shadow: var(--shadow);
+  z-index: 1000;
+}
+
+.cookie-text {
+  flex: 1;
+  color: var(--muted);
+  line-height: 1.45;
+  font-size: 14px;
+}
+
+.cookie-banner .btn {
+  box-shadow: 0 10px 30px rgba(255, 125, 77, 0.3);
+  white-space: nowrap;
+}
+
+.hidden {
+  display: none;
+}
+
 @media (max-width: 900px) {
   .hero {
     grid-template-columns: 1fr;

@@ -234,15 +234,18 @@ def register_routes(app: Flask):
         comment = Comment(body=body, user=current_user)
         db.session.add(comment)
         db.session.commit()
-        return jsonify(
-        {
-            "id": comment.id,
-            "body": comment.body,
-            "author": current_user.name or "Anonymous",
-            "created_at": comment.created_at.isoformat(),
-            "avatar": current_user.avatar,
-        }
-    ), 201
+        return (
+            jsonify(
+                {
+                    "id": comment.id,
+                    "body": comment.body,
+                    "author": current_user.name or "Anonymous",
+                    "created_at": comment.created_at.isoformat(),
+                    "avatar": current_user.avatar,
+                }
+            ),
+            201,
+        )
 
 
 app = create_app()
@@ -250,18 +253,3 @@ app = create_app()
 
 if __name__ == "__main__":
     app.run(debug=True)
-
-
-def verify_telegram_auth(data: dict, bot_token: str | None) -> bool:
-    if not bot_token:
-        return False
-    check_hash = data.get("hash")
-    if not check_hash:
-        return False
-    auth_data = {k: v for k, v in data.items() if k != "hash"}
-    # Build the data_check_string
-    pairs = [f"{k}={auth_data[k]}" for k in sorted(auth_data.keys())]
-    data_check_string = "\n" + "\n".join(pairs)  # leading newline is intentional for compatibility
-    secret_key = hashlib.sha256(bot_token.encode()).digest()
-    h = hmac.new(secret_key, data_check_string.encode(), hashlib.sha256).hexdigest()
-    return h == check_hash
