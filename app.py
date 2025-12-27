@@ -1,4 +1,7 @@
 import os
+import hashlib
+import hmac
+import json as jsonlib
 from datetime import datetime
 
 from authlib.integrations.flask_client import OAuth
@@ -223,6 +226,53 @@ def register_routes(app: Flask):
             ]
         )
 
+    @app.route("/auth/telegram", methods=["POST"])
+    def auth_telegram():
+        payload = request.get_json(silent=True) or {}
+        if not isinstance(payload, dict):
+            return jsonify({"error": "Invalid payload"}), 400
+        try:
+            data = payload.get("user") or {}
+            if not verify_telegram_auth(data, os.getenv("TELEGRAM_BOT_TOKEN")):
+                return jsonify({"error": "Invalid signature"}), 400
+        except Exception:
+            return jsonify({"error": "Invalid signature"}), 400
+
+        provider = "telegram"
+        provider_id = str(data.get("id"))
+        if not provider_id:
+            return jsonify({"error": "Missing id"}), 400
+
+        name = data.get("first_name") or data.get("username") or "Telegram user"
+        avatar = data.get("photo_url")
+        email = None
+
+        user = User.query.filter_by(provider=provider, provider_id=provider_id).first()
+        if not user:
+            user = User(
+                provider=provider,
+                provider_id=provider_id,
+                name=name,
+                avatar=avatar,
+                email=email,
+            )
+            db.session.add(user)
+            db.session.commit()
+        else:
+            user.name = name
+            user.avatar = avatar
+            db.session.commit()
+
+        login_user(user)
+        return jsonify(
+            {
+                "id": user.id,
+                "name": user.name,
+                "avatar": user.avatar,
+                "provider": user.provider,
+            }
+        )
+
     @app.route("/comments", methods=["POST"])
     @login_required
     def post_comment():
@@ -235,14 +285,14 @@ def register_routes(app: Flask):
         db.session.add(comment)
         db.session.commit()
         return jsonify(
-            {
-                "id": comment.id,
-                "body": comment.body,
-                "author": current_user.name or "Anonymous",
-                "created_at": comment.created_at.isoformat(),
-                "avatar": current_user.avatar,
-            }
-        ), 201
+        {
+            "id": comment.id,
+            "body": comment.body,
+            "author": current_user.name or "Anonymous",
+            "created_at": comment.created_at.isoformat(),
+            "avatar": current_user.avatar,
+        }
+    ), 201
 
 
 app = create_app()
@@ -250,3 +300,18 @@ app = create_app()
 
 if __name__ == "__main__":
     app.run(debug=True)
+
+
+def verify_telegram_auth(data: dict, bot_token: str | None) -> bool:
+    if not bot_token:
+        return False
+    check_hash = data.get("hash")
+    if not check_hash:
+        return False
+    auth_data = {k: v for k, v in data.items() if k != "hash"}
+    # Build the data_check_string
+    pairs = [f"{k}={auth_data[k]}" for k in sorted(auth_data.keys())]
+    data_check_string = "\n" + "\n".join(pairs)  # leading newline is intentional for compatibility
+    secret_key = hashlib.sha256(bot_token.encode()).digest()
+    h = hmac.new(secret_key, data_check_string.encode(), hashlib.sha256).hexdigest()
+    return h == check_hash

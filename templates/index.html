@@ -4,7 +4,7 @@
   <div class="hero__text">
     <div class="badge">Portfolio</div>
     <h1>Роман Кормильцын</h1>
-    <p class="tagline">Building network tools, roadmaps, and resilient UIs.</p>
+    <p class="tagline">Building network tools and resilient UIs.</p>
     <div class="contacts">
       <a href="mailto:kormylcyn.roman@gmail.com" class="chip">kormylcyn.roman@gmail.com</a>
       <a href="https://t.me/mothchild" class="chip" target="_blank">Telegram</a>
@@ -17,6 +17,7 @@
       {% else %}
         <a class="btn" href="{{ url_for('login', provider='github') }}">Login with GitHub</a>
         <a class="btn btn--ghost" href="{{ url_for('login', provider='yandex') }}">Login with Yandex</a>
+        <button class="btn btn--ghost" id="tg-login">Login with Telegram</button>
       {% endif %}
     </div>
   </div>
