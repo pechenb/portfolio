@@ -49,6 +49,7 @@ def create_app():
     with app.app_context():
         db.create_all()
         seed_projects()
+        update_project_translations()
 
     register_routes(app)
     return app
@@ -102,6 +103,23 @@ def seed_projects():
     ]
     db.session.add_all(samples)
     db.session.commit()
+
+
+def update_project_translations():
+    """Update existing sample project descriptions to Russian if they were seeded in English."""
+    updates = {
+        "Miminet Packet Filters": "Фильтры сетевой анимации для платформы Miminet.",
+        "Graphs-Graphs": "Десктопное приложение для анализа графов.",
+        "LES": "Библиотека для Kotlin: двоичный поиск, AVL-деревья и красно-чёрные деревья.",
+    }
+    changed = False
+    for name, new_desc in updates.items():
+        project = Project.query.filter_by(name=name).first()
+        if project and project.description != new_desc:
+            project.description = new_desc
+            changed = True
+    if changed:
+        db.session.commit()
 
 
 def _configure_oauth(app: Flask):
