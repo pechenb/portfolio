@@ -2,9 +2,6 @@ document.addEventListener("DOMContentLoaded", () => {
   const form = document.getElementById("comment-form");
   const input = document.getElementById("comment-input");
   const list = document.getElementById("comments-list");
-  const tgBtn = document.getElementById("tg-login");
-  const tgBotUsername = document.body.dataset?.tgBot || "";
-
   if (form && input && list) {
     form.addEventListener("submit", async (e) => {
       e.preventDefault();
@@ -27,11 +24,6 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   }
 
-  if (tgBtn) {
-    tgBtn.addEventListener("click", () => {
-      launchTelegramLogin(tgBotUsername);
-    });
-  }
 });
 
 function prependComment(list, data) {
@@ -51,15 +43,15 @@ function prependComment(list, data) {
   list.prepend(item);
 }
 
-function launchTelegramLogin(botUsername) {
-  if (!botUsername) {
-    alert("Telegram bot username is not configured.");
+function launchTelegramLogin(botId, botUsername) {
+  if (!botId) {
+    alert("Telegram bot_id is not configured.");
     return;
   }
   const popup = window.open(
-    `https://oauth.telegram.org/auth?bot=${encodeURIComponent(botUsername)}&origin=${encodeURIComponent(
+    `https://oauth.telegram.org/auth?bot_id=${encodeURIComponent(botId)}&origin=${encodeURIComponent(
       window.location.origin
-    )}&return_to=${encodeURIComponent(window.location.origin)}`,
+    )}&return_to=${encodeURIComponent(window.location.origin)}&request_access=write`,
     "tgAuth",
     "width=600,height=700"
   );
@@ -67,19 +59,3 @@ function launchTelegramLogin(botUsername) {
     alert("Please allow popups for Telegram login.");
   }
 }
-
-// Called from Telegram widget when auth succeeds
-window.onTelegramAuth = async function (user) {
-  try {
-    const res = await fetch("/auth/telegram", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ user }),
-    });
-    if (!res.ok) throw new Error("Login failed");
-    window.location.reload();
-  } catch (err) {
-    console.error(err);
-    alert("Telegram login failed");
-  }
-};
