@@ -110,7 +110,7 @@ def update_project_translations():
     updates = {
         "Miminet Packet Filters": "Фильтры сетевой анимации для платформы Miminet.",
         "Graphs-Graphs": "Десктопное приложение для анализа графов.",
-        "LES": "Библиотека для Kotlin: двоичный поиск, AVL-деревья и красно-чёрные деревья.",
+        "LES": "Библиотека для Kotlin: деревья двоичного поиска, AVL-деревья и красно-чёрные деревья.",
     }
     changed = False
     for name, new_desc in updates.items():
