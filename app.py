@@ -144,6 +144,7 @@ def register_routes(app: Flask):
             comments=comments,
             yandex_id=os.getenv("YANDEX_METRIKA_ID"),
             gtm_id=os.getenv("GTM_ID"),
+            tg_bot_username=os.getenv("TELEGRAM_BOT_USERNAME", ""),
             title="Portfolio — Roman Kormilcyn",
         )
 
