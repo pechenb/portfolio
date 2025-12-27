@@ -121,7 +121,7 @@ def _configure_oauth(app: Flask):
         access_token_url="https://oauth.yandex.ru/token",
         authorize_url="https://oauth.yandex.ru/authorize",
         api_base_url="https://login.yandex.ru/",
-        client_kwargs={"scope": "login:email login:info"},
+        client_kwargs={"scope": "login:email login:info", "force_confirm": "yes"},
     )
 
 
