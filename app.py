@@ -115,13 +115,13 @@ def _configure_oauth(app: Flask):
         client_kwargs={"scope": "read:user user:email"},
     )
     oauth.register(
-        name="google",
-        client_id=os.getenv("GOOGLE_CLIENT_ID"),
-        client_secret=os.getenv("GOOGLE_CLIENT_SECRET"),
-        access_token_url="https://oauth2.googleapis.com/token",
-        authorize_url="https://accounts.google.com/o/oauth2/auth",
-        api_base_url="https://www.googleapis.com/oauth2/v1/",
-        client_kwargs={"scope": "profile email", "prompt": "select_account"},
+        name="yandex",
+        client_id=os.getenv("YANDEX_CLIENT_ID"),
+        client_secret=os.getenv("YANDEX_CLIENT_SECRET"),
+        access_token_url="https://oauth.yandex.ru/token",
+        authorize_url="https://oauth.yandex.ru/authorize",
+        api_base_url="https://login.yandex.ru/",
+        client_kwargs={"scope": "login:email login:info"},
     )
 
 
@@ -166,13 +166,18 @@ def register_routes(app: Flask):
             name = profile.get("name") or profile.get("login")
             avatar = profile.get("avatar_url")
             email = profile.get("email")
-        elif provider == "google":
-            resp = client.get("userinfo", token=token)
+        elif provider == "yandex":
+            resp = client.get("info", params={"format": "json"}, token=token)
             profile = resp.json()
             provider_id = profile.get("id")
-            name = profile.get("name")
-            avatar = profile.get("picture")
-            email = profile.get("email")
+            name = profile.get("real_name") or profile.get("display_name") or profile.get("login")
+            avatar_id = profile.get("default_avatar_id")
+            avatar = (
+                f"https://avatars.yandex.net/get-yapic/{avatar_id}/islands-200"
+                if avatar_id
+                else None
+            )
+            email = profile.get("default_email")
         else:
             return "Unsupported provider", 400
 

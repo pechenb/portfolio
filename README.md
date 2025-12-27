@@ -4,7 +4,7 @@ Single-page personal portfolio built with Flask + SQLAlchemy + Authlib + JS. Inc
 - Hero with name, photo, contacts.
 - Projects list (seeded from DB).
 - About section.
-- Auth via GitHub and Google.
+- Auth via GitHub and Yandex.
 - Comments (requires login).
 - Yandex.Metrika + Google Tag Manager hooks.
 
@@ -21,7 +21,7 @@ Fill `.env` with secrets:
 - `SECRET_KEY` — any random string.
 - `DATABASE_URL` — defaults to `sqlite:///portfolio.db`.
 - `GITHUB_CLIENT_ID` / `GITHUB_CLIENT_SECRET`
-- `GOOGLE_CLIENT_ID` / `GOOGLE_CLIENT_SECRET`
+- `YANDEX_CLIENT_ID` / `YANDEX_CLIENT_SECRET`
 - `YANDEX_METRIKA_ID`, `GTM_ID` — optional, leave empty to disable scripts.
 
 ## Run
@@ -34,6 +34,6 @@ flask --app app run --debug
 - Replace `static/me.jpg` with your photo (any 1:1 image). Without it, a gradient placeholder is used.
 - Comments: authenticated users only; latest 10 pre-rendered, new ones posted via `/comments`.
 - Design intentionally diverges from fus1ond.ru: dark/teal/orange palette, grid layout, glassy cards.
-- Social auth requires valid OAuth apps for GitHub/Google and matching redirect URLs:
+- Social auth requires valid OAuth apps for GitHub/Yandex and matching redirect URLs:
   - `http://localhost:5000/auth/github/callback`
-  - `http://localhost:5000/auth/google/callback`
+  - `http://localhost:5000/auth/yandex/callback`
