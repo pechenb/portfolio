@@ -37,13 +37,13 @@
   <!-- /Yandex.Metrika counter -->
   {% endif %}
 </head>
-<body>
+<body data-tg-bot="{{ tg_bot_username or '' }}">
   {% if gtm_id %}
   <noscript><iframe src="https://www.googletagmanager.com/ns.html?id={{ gtm_id }}"
   height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
   {% endif %}
 
-  <div class="page" data-tg-bot="{{ tg_bot_username or '' }}">
+  <div class="page">
     {% block content %}{% endblock %}
   </div>
   <script>
