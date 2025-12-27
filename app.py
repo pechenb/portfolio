@@ -86,17 +86,17 @@ def seed_projects():
     samples = [
         Project(
             name="Miminet Packet Filters",
-            description="Network animation filters for Miminet platform.",
+            description="Фильтры сетевой анимации для платформы Miminet.",
             repo_url="https://github.com/mimi-net/miminet/pull/349",
         ),
         Project(
             name="Graphs-Graphs",
-            description="Desktop app for graph analysis.",
+            description="Десктопное приложение для анализа графов.",
             repo_url="https://github.com/spbu-coding-2024/graphs-graphs-team-6",
         ),
         Project(
             name="LES",
-            description="Library that provides Binary search, AVL and Red-black trees for Kotlin.",
+            description="Библиотека для Kotlin: деревья двоичного поиска, AVL-деревья и красно-чёрные деревья.",
             repo_url="https://github.com/spbu-coding-2024/trees-trees-team-4",
         ),
     ]
@@ -141,7 +141,7 @@ def register_routes(app: Flask):
             comments=comments,
             yandex_id=os.getenv("YANDEX_METRIKA_ID"),
             gtm_id=os.getenv("GTM_ID"),
-            title="Portfolio — Roman Kormilcyn",
+            title="Портфолио — Роман Кормильцын",
         )
 
     @app.route("/login/<provider>")
@@ -170,7 +170,11 @@ def register_routes(app: Flask):
             resp = client.get("info", params={"format": "json"}, token=token)
             profile = resp.json()
             provider_id = profile.get("id")
-            name = profile.get("real_name") or profile.get("display_name") or profile.get("login")
+            name = (
+                profile.get("real_name")
+                or profile.get("display_name")
+                or profile.get("login")
+            )
             avatar_id = profile.get("default_avatar_id")
             avatar = (
                 f"https://avatars.yandex.net/get-yapic/{avatar_id}/islands-200"

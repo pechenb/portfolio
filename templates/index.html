@@ -2,9 +2,9 @@
 {% block content %}
 <header class="hero">
   <div class="hero__text">
-    <div class="badge">Portfolio</div>
+    <div class="badge">Портфолио</div>
     <h1>Роман Кормильцын</h1>
-    <p class="tagline">Building network tools and resilient UIs.</p>
+    <p class="tagline">Разрабатываю сетевые инструменты и устойчивые интерфейсы.</p>
     <div class="contacts">
       <a href="mailto:kormylcyn.roman@gmail.com" class="chip">kormylcyn.roman@gmail.com</a>
       <a href="https://t.me/mothchild" class="chip" target="_blank">Telegram</a>
@@ -12,11 +12,11 @@
     </div>
     <div class="cta-row">
       {% if current_user.is_authenticated %}
-        <span class="chip chip--muted">Hi, {{ current_user.name or 'Guest' }}</span>
-        <a class="btn" href="{{ url_for('logout') }}">Logout</a>
+        <span class="chip chip--muted">Привет, {{ current_user.name or 'Гость' }}</span>
+        <a class="btn" href="{{ url_for('logout') }}">Выйти</a>
       {% else %}
-        <a class="btn" href="{{ url_for('login', provider='github') }}">Login with GitHub</a>
-        <a class="btn btn--ghost" href="{{ url_for('login', provider='yandex') }}">Login with Yandex</a>
+        <a class="btn" href="{{ url_for('login', provider='github') }}">Войти через GitHub</a>
+        <a class="btn btn--ghost" href="{{ url_for('login', provider='yandex') }}">Войти через Яндекс</a>
       {% endif %}
     </div>
   </div>
@@ -30,25 +30,25 @@
 <main>
   <section class="section">
     <div class="section__header">
-      <h2>About</h2>
-      <p>Focused on network simulation, backend services, and fast UI iterations.</p>
+      <h2>Обо мне</h2>
+      <p>Занимаюсь эмуляцией сетей, бэкендом и быстрыми итерациями интерфейсов.</p>
     </div>
     <div class="card about">
-      <p>Engineering network emulation tools (Miminet), building Compose Multiplatform applications (Graphs-Graphs) and libraries for Kotlin. Interested in system programming.
+      <p>Делаю инструменты для эмуляции сетей (Miminet), приложения на Compose Multiplatform (Graphs-Graphs) и библиотеки на Kotlin. Интересуюсь системным программированием.</p>
     </div>
   </section>
 
   <section class="section">
     <div class="section__header">
-      <h2>Projects</h2>
-      <p>Selected work — code links included.</p>
+      <h2>Проекты</h2>
+      <p>Выбранные работы — ссылки на код внутри.</p>
     </div>
     <div class="grid">
       {% for p in projects %}
       <article class="card project">
         <div class="project__title">{{ p.name }}</div>
         <p class="project__desc">{{ p.description }}</p>
-        <a href="{{ p.repo_url }}" target="_blank" class="project__link">Repository →</a>
+        <a href="{{ p.repo_url }}" target="_blank" class="project__link">Репозиторий →</a>
       </article>
       {% endfor %}
     </div>
@@ -56,17 +56,17 @@
 
   <section class="section">
     <div class="section__header">
-      <h2>Comments</h2>
-      <p>Share your feedback or just say hi.</p>
+      <h2>Комментарии</h2>
+      <p>Оставьте отзыв или просто напишите «привет».</p>
     </div>
     <div class="card comments">
       <form id="comment-form">
-        <textarea id="comment-input" name="body" rows="3" placeholder="Leave a comment..." {% if not current_user.is_authenticated %}disabled{% endif %}></textarea>
+        <textarea id="comment-input" name="body" rows="3" placeholder="Оставьте комментарий..." {% if not current_user.is_authenticated %}disabled{% endif %}></textarea>
         <div class="form-actions">
           {% if current_user.is_authenticated %}
-          <button type="submit" class="btn">Post</button>
+          <button type="submit" class="btn">Отправить</button>
           {% else %}
-          <span class="hint">Login to comment</span>
+          <span class="hint">Войдите, чтобы комментировать</span>
           {% endif %}
         </div>
       </form>
@@ -76,7 +76,7 @@
           <div class="comment__avatar" style="background-image:url('{{ c.user.avatar or '' }}')"></div>
           <div class="comment__body">
             <div class="comment__meta">
-              <span class="comment__author">{{ c.user.name or "Anonymous" }}</span>
+              <span class="comment__author">{{ c.user.name or "Аноним" }}</span>
               <span class="comment__time">{{ c.created_at.strftime('%Y-%m-%d %H:%M') }}</span>
             </div>
             <div class="comment__text">{{ c.body }}</div>

@@ -13,13 +13,13 @@ document.addEventListener("DOMContentLoaded", () => {
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ body }),
         });
-        if (!res.ok) throw new Error("Failed to post");
+        if (!res.ok) throw new Error("Не удалось отправить");
         const data = await res.json();
         prependComment(list, data);
         input.value = "";
       } catch (err) {
         console.error(err);
-        alert("Could not post comment. Are you logged in?");
+        alert("Не удалось отправить комментарий. Проверьте, что вы авторизованы.");
       }
     });
   }
@@ -56,8 +56,8 @@ function prependComment(list, data) {
     <div class="comment__avatar" style="background-image:url('${data.avatar || ""}')"></div>
     <div class="comment__body">
       <div class="comment__meta">
-        <span class="comment__author">${data.author || "Anonymous"}</span>
-        <span class="comment__time">just now</span>
+        <span class="comment__author">${data.author || "Аноним"}</span>
+        <span class="comment__time">только что</span>
       </div>
       <div class="comment__text"></div>
     </div>
