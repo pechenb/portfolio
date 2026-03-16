@@ -1,5 +1,6 @@
 import os
-from datetime import datetime
+from datetime import datetime, timezone
+from zoneinfo import ZoneInfo, ZoneInfoNotFoundError
 
 from authlib.integrations.flask_client import OAuth
 from flask import (
@@ -38,6 +39,7 @@ def create_app():
         "DATABASE_URL", "sqlite:///portfolio.db"
     )
     app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
+    app.config["APP_TIMEZONE"] = os.getenv("APP_TIMEZONE", "Europe/Moscow")
 
     db.init_app(app)
     login_manager.init_app(app)
@@ -149,6 +151,20 @@ def load_user(user_id):
 
 
 def register_routes(app: Flask):
+    def _to_app_timezone(dt: datetime) -> datetime:
+        if dt.tzinfo is None:
+            dt = dt.replace(tzinfo=timezone.utc)
+        else:
+            dt = dt.astimezone(timezone.utc)
+        try:
+            return dt.astimezone(ZoneInfo(app.config["APP_TIMEZONE"]))
+        except ZoneInfoNotFoundError:
+            return dt
+
+    @app.template_filter("comment_time")
+    def _comment_time_filter(dt: datetime) -> str:
+        return _to_app_timezone(dt).strftime("%Y-%m-%d %H:%M")
+
     @app.route("/")
     def index():
         projects = Project.query.all()
@@ -238,7 +254,7 @@ def register_routes(app: Flask):
                     "id": c.id,
                     "body": c.body,
                     "author": c.user.name or "Anonymous",
-                    "created_at": c.created_at.isoformat(),
+                    "created_at": _to_app_timezone(c.created_at).isoformat(),
                     "avatar": c.user.avatar,
                 }
                 for c in comments
@@ -262,7 +278,7 @@ def register_routes(app: Flask):
                     "id": comment.id,
                     "body": comment.body,
                     "author": current_user.name or "Anonymous",
-                    "created_at": comment.created_at.isoformat(),
+                    "created_at": _to_app_timezone(comment.created_at).isoformat(),
                     "avatar": current_user.avatar,
                 }
             ),

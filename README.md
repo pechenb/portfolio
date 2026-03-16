@@ -20,6 +20,7 @@ cp .env.example .env
 Fill `.env` with secrets:
 - `SECRET_KEY` — any random string.
 - `DATABASE_URL` — defaults to `sqlite:///portfolio.db`.
+- `APP_TIMEZONE` — defaults to `Europe/Moscow`.
 - `GITHUB_CLIENT_ID` / `GITHUB_CLIENT_SECRET`
 - `YANDEX_CLIENT_ID` / `YANDEX_CLIENT_SECRET`
 - `YANDEX_METRIKA_ID`, `GTM_ID` — optional, leave empty to disable scripts.
